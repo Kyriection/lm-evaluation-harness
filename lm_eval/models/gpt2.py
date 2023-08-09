@@ -97,9 +97,9 @@ class HFLM(BaseLM):
                     torch_dtype=_get_dtype(dtype),
                     trust_remote_code=trust_remote_code,
                     )
+            print('initial model')
 
             if self.heavy_hitter_ratio + self.recent_ratio < 1:
-
                 print('enable heavy-hitter')
                 checkpoint = copy.deepcopy(self.model.state_dict())
                 config = AutoConfig.from_pretrained(pretrained)
