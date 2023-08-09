@@ -2,6 +2,7 @@ import torch
 import transformers
 from typing import Optional, Union
 from lm_eval.base import BaseLM
+import copy
 
 from transformers import AutoModelForCausalLM, AutoTokenizer, AutoConfig
 from utils_lm_eval_global.modify_llama import convert_kvcache_llama_heavy_recent, LlamaAttention_heavy_hitter
