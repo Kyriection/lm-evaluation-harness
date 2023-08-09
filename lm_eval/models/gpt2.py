@@ -109,7 +109,7 @@ class HFLM(BaseLM):
                 self.model = convert_kvcache_llama_heavy_recent(self.model, config)
                 self.model.load_state_dict(checkpoint)
 
-            self.model = self.model.to(self.device)
+            self.model = self.model.half().to(self.device)
 
             self.tokenizer = transformers.AutoTokenizer.from_pretrained(
                     tokenizer if tokenizer else pretrained,
