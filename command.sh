@@ -1,8 +1,11 @@
 python main.py \
     --model hf-causal \
-    --model_args pretrained=facebook/opt-350m \
+    --model_args pretrained=huggyllama/llama-7b \
     --tasks scrolls_contractnli \
-    --device cuda:0
+    --device cuda:0 \
+    --num_fewshot 0 \
+    --heavy_hitter_ratio 0.1 \
+    --recent_ratio 0.1
 
 
 

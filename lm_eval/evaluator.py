@@ -30,6 +30,8 @@ def simple_evaluate(
     decontamination_ngrams_path=None,
     write_out=False,
     output_base_path=None,
+    heavy_hitter_ratio=1,
+    recent_ratio=1,
 ):
     """Instantiate and evaluate a model on a list of tasks.
 
@@ -81,6 +83,8 @@ def simple_evaluate(
                 pretrained=model,
                 batch_size=batch_size,
                 max_batch_size=max_batch_size,
+                heavy_hitter_ratio=heavy_hitter_ratio,
+                recent_ratio=recent_ratio,
                 )
         no_cache = True
     else:

@@ -3,6 +3,8 @@ import transformers
 from typing import Optional, Union
 from lm_eval.base import BaseLM
 
+from transformers import AutoModelForCausalLM, AutoTokenizer, AutoConfig
+from utils_lm_eval_global.modify_llama import convert_kvcache_llama_heavy_recent, LlamaAttention_heavy_hitter
 
 def _get_dtype(
     dtype: Union[str, torch.dtype]
@@ -34,9 +36,14 @@ class HFLM(BaseLM):
         load_in_8bit: Optional[bool] = False,
         trust_remote_code: Optional[bool] = False,
         dtype: Optional[Union[str, torch.dtype]]="auto",
+        heavy_hitter_ratio=1,
+        recent_ratio=1,
+        generation=False,
     ):
         super().__init__()
 
+        self.heavy_hitter_ratio = heavy_hitter_ratio
+        self.recent_ratio = recent_ratio
 
         # Initialize model
         if isinstance(pretrained, transformers.PreTrainedModel):
@@ -89,7 +96,20 @@ class HFLM(BaseLM):
                     revision=revision,
                     torch_dtype=_get_dtype(dtype),
                     trust_remote_code=trust_remote_code,
-                    ).to(self.device)
+                    )
+
+            if self.heavy_hitter_ratio + self.recent_ratio < 1:
+
+                print('enable heavy-hitter')
+                checkpoint = copy.deepcopy(self.model.state_dict())
+                config = AutoConfig.from_pretrained(pretrained)
+                config.heavy_ratio = self.heavy_hitter_ratio
+                config.recent_ratio = self.recent_ratio
+                self.model = convert_kvcache_llama_heavy_recent(self.model, config)
+                self.model.load_state_dict(checkpoint)
+
+            self.model = self.model.to(self.device)
+
             self.tokenizer = transformers.AutoTokenizer.from_pretrained(
                     tokenizer if tokenizer else pretrained,
                     revision=revision,
