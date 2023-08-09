@@ -76,7 +76,8 @@ def simple_evaluate(
         if model_args is None:
             model_args = ""
         lm = lm_eval.models.get_model(model).create_from_arg_string(
-            model_args, {"batch_size": batch_size, "max_batch_size": max_batch_size, "device": device}
+            model_args, {"batch_size": batch_size, "max_batch_size": max_batch_size, "device": device, 'heavy_hitter_ratio': heavy_hitter_ratio, 
+            'recent_ratio': recent_ratio}
         )
     elif isinstance(model, transformers.PreTrainedModel):
         lm = lm_eval.models.get_model("hf-causal")(
